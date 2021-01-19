@@ -2,6 +2,8 @@ package com.example.Lab_rob_Ian.models;
 
 import javax.annotation.Generated;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="employees")
@@ -27,16 +29,43 @@ public class Employee {
     @Column(name = "email")
     private String email;
 
+    @ManyToOne
+    @JoinColumn(name = "department", nullable=false)
+    private Department department;
+
+    @ManyToMany
+    @JoinTable(
+            name = "employees_projects",
+            joinColumns = {
+                    @JoinColumn(
+                            name = "employee_id",
+                            nullable = false,
+                            updatable = false
+                    )
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(
+                            name = "project_id",
+                            nullable = false,
+                            updatable = false
+                    )
+            }
+    )
+    private List<Project> projects;
+
+
     public Employee(){
 
     }
 
-    public Employee(String firstName, String lastName, int age, int employeeNumber, String email) {
+    public Employee(String firstName, String lastName, int age, int employeeNumber, String email, Department department) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.employeeNumber = employeeNumber;
         this.email = email;
+        this.department = department;
+        this.projects = new ArrayList<Project>();
     }
 
     public Long getId() {
@@ -86,4 +115,6 @@ public class Employee {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public void addProject(Project project) {this.projects.add(project);}
 }
